@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowchart and Pseudocode Tutorial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .flowchart-symbol {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            background-color: #ecf0f1;
+            text-align: center;
+            min-width: 100px;
+        }
+        .flowchart-symbol.start {
+            border-radius: 50%;
+        }
+        .flowchart-symbol.process {
+            border-radius: 0;
+        }
+        .flowchart-symbol.decision {
+            border-radius: 0;
+            transform: rotate(45deg);
+        }
+        .pseudocode {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .example {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin: 10px 0;
+        }
+        .highlight {
+            background-color: #f39c12;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Understanding Flowcharts and Pseudocode</h1>
+
+    <div class="section">
+        <h2>What is a Flowchart?</h2>
+        <p>A flowchart is a visual representation of a process or algorithm. It uses symbols to show the steps, decisions, and flow of a program or system.</p>
+
+        <h3>Common Flowchart Symbols</h3>
+        <div class="flowchart-symbol start">Start/End</div>
+        <div class="flowchart-symbol process">Process</div>
+        <div class="flowchart-symbol decision">Decision</div>
+        <div class="flowchart-symbol">Input/Output</div>
+
+        <h3>Example Flowchart: Calculating Sum of Two Numbers</h3>
+        <div class="example">
+            <p>1. Start</p>
+            <p>2. Input first number</p>
+            <p>3. Input second number</p>
+            <p>4. Add the numbers</p>
+            <p>5. Display the result</p>
+            <p>6. End</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>What is Pseudocode?</h2>
+        <p>Pseudocode is a way of writing algorithms in plain English (or your native language) that resembles programming code but is not actual code. It helps in planning and understanding logic before writing real code.</p>
+
+        <h3>Key Elements of Pseudocode</h3>
+        <ul>
+            <li><strong>Statements:</strong> Simple instructions like "Display message" or "Set variable = value"</li>
+            <li><strong>Control Structures:</strong> IF-THEN-ELSE, WHILE loops, FOR loops</li>
+            <li><strong>Input/Output:</strong> READ and WRITE operations</li>
+            <li><strong>Comments:</strong> Explanations starting with // or /* */</li>
+        </ul>
+
+        <h3>Example Pseudocode: Calculating Sum of Two Numbers</h3>
+        <div class="pseudocode">
+            // Program to calculate sum of two numbers<br>
+            BEGIN<br>
+            &nbsp;&nbsp;DECLARE num1, num2, sum AS INTEGER<br>
+            &nbsp;&nbsp;READ num1<br>
+            &nbsp;&nbsp;READ num2<br>
+            &nbsp;&nbsp;sum = num1 + num2<br>
+            &nbsp;&nbsp;WRITE "The sum is: ", sum<br>
+            END
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Flowchart vs Pseudocode</h2>
+        <p>Both flowcharts and pseudocode serve similar purposes but in different ways:</p>
+        <ul>
+            <li><strong>Flowcharts:</strong> Visual, good for understanding overall flow and logic at a glance</li>
+            <li><strong>Pseudocode:</strong> Text-based, easier to convert to actual code, more detailed for complex algorithms</li>
+        </ul>
+
+        <h3>Combined Example: Finding Maximum of Two Numbers</h3>
+        <h4>Flowchart Steps:</h4>
+        <div class="example">
+            <p>1. Start</p>
+            <p>2. Input two numbers (a, b)</p>
+            <p>3. Is a > b?</p>
+            <p>&nbsp;&nbsp;Yes: Display a as maximum</p>
+            <p>&nbsp;&nbsp;No: Display b as maximum</p>
+            <p>4. End</p>
+        </div>
+
+        <h4>Pseudocode:</h4>
+        <div class="pseudocode">
+            BEGIN<br>
+            &nbsp;&nbsp;DECLARE a, b, max AS INTEGER<br>
+            &nbsp;&nbsp;READ a, b<br>
+            &nbsp;&nbsp;IF a > b THEN<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;max = a<br>
+            &nbsp;&nbsp;ELSE<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;max = b<br>
+            &nbsp;&nbsp;END IF<br>
+            &nbsp;&nbsp;WRITE "Maximum is: ", max<br>
+            END
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Tips for Understanding Flowcharts and Pseudocode</h2>
+        <ul>
+            <li>Always start from the "Start" symbol in flowcharts</li>
+            <li>Follow the arrows to understand the flow</li>
+            <li>Pay attention to decision points (diamonds) - they represent conditions</li>
+            <li>In pseudocode, indentation shows the structure of loops and conditionals</li>
+            <li>Practice converting between flowcharts, pseudocode, and actual code</li>
+            <li>Use comments in pseudocode to explain complex parts</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Practice Exercise</h2>
+        <p>Try to create a flowchart and pseudocode for: "Check if a number is even or odd"</p>
+        <div class="example">
+            <strong>Hint:</strong> Use modulo operator (%) or check if divisible by 2.
+        </div>
+    </div>
+</body>
+</html>

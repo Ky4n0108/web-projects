@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Animasi Data Penelitian</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        #videoContainer {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #canvasWrapper {
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+        }
+
+        #canvas {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 95vw;
+            max-height: 95vh;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.95);
+            padding: 20px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            z-index: 100;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #zoomControls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 0 15px;
+            border-left: 2px solid #e5e7eb;
+        }
+
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        #zoomLevel {
+            font-size: 14px;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #playPause {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+        }
+
+        #playPause:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+        }
+
+        #restart {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        #restart:hover {
+            transform: scale(1.05);
+        }
+
+        #chartToggle {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        #chartToggle:hover {
+            transform: scale(1.05);
+        }
+
+        #variableToggle {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        #variableToggle:hover {
+            transform: scale(1.05);
+        }
+
+        #progress {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.95);
+            padding: 15px 30px;
+            border-radius: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            font-weight: bold;
+            color: #667eea;
+            z-index: 100;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="videoContainer">
+        <div id="canvasWrapper">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div id="progress">Loading...</div>
+        <div id="controls">
+            <button id="variableToggle">Variabel X</button>
+            <button id="playPause">▶ Play</button>
+            <button id="restart">⟲ Restart</button>
+            <button id="chartToggle">Diagram Batang</button>
+            <div id="zoomControls">
+                <button id="zoomOut" class="zoom-btn" title="Zoom Out">−</button>
+                <span id="zoomLevel">100%</span>
+                <button id="zoomIn" class="zoom-btn" title="Zoom In">+</button>
+                <button id="zoomReset" title="Reset Zoom">↺</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const canvasWrapper = document.getElementById('canvasWrapper');
+        const playPauseBtn = document.getElementById('playPause');
+        const restartBtn = document.getElementById('restart');
+        const chartToggleBtn = document.getElementById('chartToggle');
+        const variableToggleBtn = document.getElementById('variableToggle');
+        const progressDiv = document.getElementById('progress');
+        const zoomInBtn = document.getElementById('zoomIn');
+        const zoomOutBtn = document.getElementById('zoomOut');
+        const zoomResetBtn = document.getElementById('zoomReset');
+        const zoomLevelSpan = document.getElementById('zoomLevel');
+
+        canvas.width = 1280;
+        canvas.height = 720;
+
+        let isPlaying = false;
+        let currentFrame = 0;
+        let currentItem = 0;
+        let chartType = 'bar'; // 'bar' or 'pie'
+        let currentVariable = 'X';
+        let animationProgress = 0;
+        let zoomLevel = 1.0;
+        const ZOOM_STEP = 0.1;
+        const MIN_ZOOM = 0.5;
+        const MAX_ZOOM = 2.0;
+
+        const COLORS = ['#ef4444', '#f97316', '#fbbf24', '#22c55e', '#10b981'];
+        const FRAME_DURATION = 180; // frames per item (3 seconds at 60fps)
+        const TRANSITION_FRAMES = 30;
+
+        const dataVariabelX = [
+           
+            { no: 1, dimensi: "Suasana Siaran", indikator: "Saya menikmati kelucuan, spontanitas, atau tingkah laku menghibur dari streamer", STS: 1.7, TS: 4.4, N: 22.8, S: 26.1, SS: 45 },
+ 
+        ];
+
+        const dataVariabelY = [
+            
+            { no: 1, dimensi: "Dukungan Finansial", indikator: "Saya memberikan donasi sebagai bentuk apresiasi terhadap usaha streamer dalam menghibur", STS: 17.8, TS: 13.3, N: 31.1, S: 20, SS: 17.8 },
+           
+        ];
+
+        
+        let currentData = dataVariabelX;
+
+        function updateZoom() {
+            canvasWrapper.style.transform = `scale(${zoomLevel})`;
+            zoomLevelSpan.textContent = Math.round(zoomLevel * 100) + '%';
+        }
+
+        function zoomIn() {
+            if (zoomLevel < MAX_ZOOM) {
+                zoomLevel = Math.min(zoomLevel + ZOOM_STEP, MAX_ZOOM);
+                updateZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (zoomLevel > MIN_ZOOM) {
+                zoomLevel = Math.max(zoomLevel - ZOOM_STEP, MIN_ZOOM);
+                updateZoom();
+            }
+        }
+
+        function resetZoom() {
+            zoomLevel = 1.0;
+            updateZoom();
+        }
+
+        function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+
+        function drawBackground() {
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#f8fafc');
+            gradient.addColorStop(1, '#e0e7ff');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawTitle(item) {
+            ctx.save();
+            
+            // Title background
+            const titleGradient = ctx.createLinearGradient(0, 30, 0, 150);
+            titleGradient.addColorStop(0, '#667eea');
+            titleGradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = titleGradient;
+            ctx.shadowColor = 'rgba(0,0,0,0.2)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 10;
+            roundRect(ctx, 40, 30, canvas.width - 80, 120, 20);
+            ctx.fill();
+            ctx.shadowColor = 'transparent';
+
+            // Title text
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`VARIABEL ${currentVariable}`, canvas.width / 2, 70);
+            
+            ctx.font = 'bold 20px Arial';
+            ctx.fillText(`Item ${item.no} - ${item.dimensi}`, canvas.width / 2, 100);
+            
+            ctx.font = '16px Arial';
+            const maxWidth = canvas.width - 120;
+            const text = item.indikator;
+            if (ctx.measureText(text).width > maxWidth) {
+                const words = text.split(' ');
+                let line = '';
+                let y = 130;
+                for (let word of words) {
+                    const testLine = line + word + ' ';
+                    if (ctx.measureText(testLine).width > maxWidth) {
+                        ctx.fillText(line, canvas.width / 2, y);
+                        line = word + ' ';
+                        y += 20;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, canvas.width / 2, y);
+            } else {
+                ctx.fillText(text, canvas.width / 2, 130);
+            }
+
+            ctx.restore();
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function drawBarChart(item, progress) {
+            const data = [
+                { name: 'STS', value: item.STS, label: 'Sangat Tidak Setuju' },
+                { name: 'TS', value: item.TS, label: 'Tidak Setuju' },
+                { name: 'N', value: item.N, label: 'Netral' },
+                { name: 'S', value: item.S, label: 'Setuju' },
+                { name: 'SS', value: item.SS, label: 'Sangat Setuju' }
+            ];
+
+            const chartX = 100;
+            const chartY = 220;
+            const chartWidth = canvas.width - 200;
+            const chartHeight = 350;
+            const barWidth = (chartWidth - 100) / 5;
+            const maxValue = 50;
+
+            // Draw axes
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(chartX, chartY);
+            ctx.lineTo(chartX, chartY + chartHeight);
+            ctx.lineTo(chartX + chartWidth, chartY + chartHeight);
+            ctx.stroke();
+
+            // Draw grid
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = chartY + chartHeight - (chartHeight * i / 5);
+                ctx.beginPath();
+                ctx.moveTo(chartX, y);
+                ctx.lineTo(chartX + chartWidth, y);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#64748b';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillText((maxValue * i / 5).toFixed(0) + '%', chartX - 10, y + 5);
+            }
+
+            // Draw bars with animation
+            data.forEach((d, i) => {
+                const x = chartX + 50 + i * barWidth;
+                const barHeight = (d.value / maxValue) * chartHeight * easeInOutCubic(progress);
+                const y = chartY + chartHeight - barHeight;
+
+                // Bar shadow
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 5;
+
+                // Bar gradient
+                const gradient = ctx.createLinearGradient(x, y, x, chartY + chartHeight);
+                gradient.addColorStop(0, COLORS[i]);
+                gradient.addColorStop(1, COLORS[i] + 'AA');
+                ctx.fillStyle = gradient;
+                
+                roundRect(ctx, x, y, barWidth - 20, barHeight, 10);
+                ctx.fill();
+
+                ctx.shadowColor = 'transparent';
+
+                // Value on top of bar
+                if (progress > 0.5) {
+                    ctx.fillStyle = '#1e293b';
+                    ctx.font = 'bold 18px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(d.value.toFixed(1) + '%', x + (barWidth - 20) / 2, y - 10);
+                }
+
+                // Label below bar
+                ctx.fillStyle = '#334155';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(d.name, x + (barWidth - 20) / 2, chartY + chartHeight + 25);
+                
+                ctx.font = '12px Arial';
+                ctx.fillStyle = '#64748b';
+                const words = d.label.split(' ');
+                let line = '';
+                let yPos = chartY + chartHeight + 45;
+                for (let word of words) {
+                    const testLine = line + word + ' ';
+                    if (ctx.measureText(testLine).width > barWidth - 10) {
+                        ctx.fillText(line.trim(), x + (barWidth - 20) / 2, yPos);
+                        line = word + ' ';
+                        yPos += 15;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line.trim(), x + (barWidth - 20) / 2, yPos);
+            });
+        }
+
+        function drawPieChart(item, progress) {
+            const data = [
+                { name: 'STS', value: item.STS, label: 'Sangat Tidak Setuju' },
+                { name: 'TS', value: item.TS, label: 'Tidak Setuju' },
+                { name: 'N', value: item.N, label: 'Netral' },
+                { name: 'S', value: item.S, label: 'Setuju' },
+                { name: 'SS', value: item.SS, label: 'Sangat Setuju' }
+            ];
+
+            const total = data.reduce((sum, d) => sum + d.value, 0);
+            const centerX = canvas.width / 2 - 150;
+            const centerY = 400;
+            const radius = 150;
+
+            let startAngle = -Math.PI / 2;
+
+            // Draw pie slices
+            data.forEach((d, i) => {
+                const sliceAngle = (d.value / total) * 2 * Math.PI * easeInOutCubic(progress);
+                const endAngle = startAngle + sliceAngle;
+
+                // Slice shadow
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 15;
+                ctx.shadowOffsetX = 5;
+                ctx.shadowOffsetY = 5;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = COLORS[i];
+                ctx.fill();
+
+                ctx.restore();
+
+                // Label line and text
+                if (progress > 0.7) {
+                    const labelAngle = startAngle + sliceAngle / 2;
+                    const labelX = centerX + Math.cos(labelAngle) * (radius + 40);
+                    const labelY = centerY + Math.sin(labelAngle) * (radius + 40);
+
+                    ctx.strokeStyle = COLORS[i];
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + Math.cos(labelAngle) * radius, centerY + Math.sin(labelAngle) * radius);
+                    ctx.lineTo(labelX, labelY);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#1e293b';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = labelX > centerX ? 'left' : 'right';
+                    ctx.fillText(d.name + ': ' + d.value.toFixed(1) + '%', labelX + (labelX > centerX ? 10 : -10), labelY);
+                }
+
+                startAngle = endAngle;
+            });
+
+            // Draw legend
+            const legendX = canvas.width / 2 + 100;
+            const legendY = 250;
+            data.forEach((d, i) => {
+                const y = legendY + i * 50;
+
+                // Legend color box
+                ctx.fillStyle = COLORS[i];
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 5;
+                roundRect(ctx, legendX, y, 30, 30, 5);
+                ctx.fill();
+                ctx.shadowColor = 'transparent';
+
+                // Legend text
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(d.label, legendX + 45, y + 12);
+                
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText(d.value.toFixed(1) + '%', legendX + 45, y + 28);
+            });
+        }
+
+        function drawFrame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBackground();
+
+            const item = currentData[currentItem];
+            const frameInItem = currentFrame % FRAME_DURATION;
+            const progress = Math.min(frameInItem / TRANSITION_FRAMES, 1);
+
+            drawTitle(item);
+
+            if (chartType === 'bar') {
+                drawBarChart(item, progress);
+            } else {
+                drawPieChart(item, progress);
+            }
+
+            // Progress indicator
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.8)';
+            const progressWidth = (canvas.width - 100) * ((currentItem * FRAME_DURATION + frameInItem) / (currentData.length * FRAME_DURATION));
+            roundRect(ctx, 50, canvas.height - 40, progressWidth, 10, 5);
+            ctx.fill();
+
+            progressDiv.textContent = `Item ${currentItem + 1}/${currentData.length} | Variabel ${currentVariable}`;
+        }
+
+        function animate() {
+            if (isPlaying) {
+                drawFrame();
+                currentFrame++;
+
+                if (currentFrame >= FRAME_DURATION) {
+                    currentFrame = 0;
+                    currentItem++;
+                    if (currentItem >= currentData.length) {
+                        currentItem = 0;
+                    }
+                }
+
+                requestAnimationFrame(animate);
+            }
+        }
+
+        playPauseBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playPauseBtn.textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+            if (isPlaying) {
+                animate();
+            }
+        });
+
+        restartBtn.addEventListener('click', () => {
+            currentFrame = 0;
+            currentItem = 0;
+            drawFrame();
+        });
+
+        chartToggleBtn.addEventListener('click', () => {
+            chartType = chartType === 'bar' ? 'pie' : 'bar';
+            chartToggleBtn.textContent = chartType === 'bar' ? 'Diagram Batang' : 'Diagram Lingkaran';
+            drawFrame();
+        });
+
+        variableToggleBtn.addEventListener('click', () => {
+            currentVariable = currentVariable === 'X' ? 'Y' : 'X';
+            currentData = currentVariable === 'X' ? dataVariabelX : dataVariabelY;
+            variableToggleBtn.textContent = `Variabel ${currentVariable}`;
+            currentItem = 0;
+            currentFrame = 0;
+            drawFrame();
+        });
+
+        // Zoom controls
+        zoomInBtn.addEventListener('click', zoomIn);
+        zoomOutBtn.addEventListener('click', zoomOut);
+        zoomResetBtn.addEventListener('click', resetZoom);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '+' || e.key === '=') {
+                e.preventDefault();
+                zoomIn();
+            } else if (e.key === '-' || e.key === '_') {
+                e.preventDefault();
+                zoomOut();
+            } else if (e.key === '0') {
+                e.preventDefault();
+                resetZoom();
+            } else if (e.key === ' ') {
+                e.preventDefault();
+                playPauseBtn.click();
+            }
+        });
+
+        // Mouse wheel zoom
+        canvasWrapper.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomIn();
+            } else {
+                zoomOut();
+            }
+        });
+
+        // Initial draw
+        drawFrame();
+        updateZoom();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,269 @@
+import React, { useState } from 'react';
+
+export default function PosterRangkaian() {
+  const [zoomedImage, setZoomedImage] = useState(null);
+
+  const handleImageClick = (imageNum) => {
+    setZoomedImage(zoomedImage === imageNum ? null : imageNum);
+  };
+
+  return (
+    <div className="w-full min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-blue-800 p-8 flex items-center justify-center overflow-auto">
+      <style>{`
+        @keyframes zoomIn {
+          from {
+            transform: scale(0.8);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        
+        @keyframes zoomOut {
+          from {
+            transform: scale(1);
+            opacity: 1;
+          }
+          to {
+            transform: scale(0.8);
+            opacity: 0;
+          }
+        }
+        
+        .zoom-in {
+          animation: zoomIn 0.5s ease-out;
+        }
+        
+        .zoom-out {
+          animation: zoomOut 0.5s ease-out;
+        }
+        
+        .image-container {
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        
+        .image-container:hover {
+          transform: scale(1.02);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .image-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+        
+        .image-container:hover .image-img {
+          transform: scale(1.05);
+        }
+        
+        .zoom-badge {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          background: rgba(255,255,255,0.9);
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: bold;
+          color: #333;
+          z-index: 10;
+        }
+      `}</style>
+
+      <div className="max-w-7xl w-full bg-white rounded-xl shadow-2xl p-12">
+        
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-blue-900 mb-2">REKAYASA KOMPLEKS PERUMAHAN</h1>
+          <h2 className="text-2xl text-purple-700 mb-2">Sistem Penerangan dengan Rangkaian Campuran</h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto"></div>
+        </div>
+
+        {/* Deskripsi Proyek */}
+        <div className="bg-blue-50 p-6 rounded-lg border-2 border-blue-300 mb-8">
+          <h3 className="text-lg font-bold text-blue-900 mb-2">📋 DESKRIPSI PROYEK</h3>
+          <p className="text-gray-700">Rekayasa kompleks perumahan dengan sistem penerangan terintegrasi menggunakan rangkaian campuran. Board atas menampilkan model perumahan dengan lampu LED yang tersebar, sementara board bawah menunjukkan rangkaian listrik yang menggerakkan seluruh sistem pencahayaan. Klik pada gambar untuk melihat detail lebih besar!</p>
+        </div>
+
+        {/* Main Content - Foto Proyek */}
+        <div className="grid grid-cols-2 gap-8 mb-8">
+          
+          {/* Foto 1 - Model Perumahan */}
+          <div className="flex flex-col items-center">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">📸 BOARD MODEL PERUMAHAN (TAMPAK ATAS)</h3>
+            <div 
+              className={`image-container relative bg-gray-100 border-4 border-gray-400 rounded-lg overflow-hidden shadow-lg w-full aspect-square flex items-center justify-center ${zoomedImage === 1 ? 'zoom-in' : ''}`}
+              onClick={() => handleImageClick(1)}
+            >
+              <img 
+                src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxEsEAwQCQoKCAoKDwkKDA8LDA0KCAoMDAwLDAkLDA8LDAwMDAkMDAwMDAwMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwYDAwwMDAYDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCADIAMgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==" 
+                alt="Model Perumahan Tampak Atas"
+                className="image-img"
+              />
+              <div className="zoom-badge">🔍 Klik untuk zoom</div>
+            </div>
+            <div className="mt-4 bg-yellow-50 p-4 rounded-lg border-2 border-yellow-300 w-full">
+              <p className="text-sm text-gray-800"><span className="font-bold">Board Atas:</span> Tampilan atas model perumahan dengan lampu LED putih yang tersebar di berbagai lokasi (rumah, jalan, area terbuka) untuk menciptakan sistem penerangan yang terintegrasi dan realistis.</p>
+            </div>
+          </div>
+
+          {/* Foto 2 - Board Rangkaian */}
+          <div className="flex flex-col items-center">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">🔌 BOARD RANGKAIAN LISTRIK (TAMPAK BAWAH)</h3>
+            <div 
+              className={`image-container relative bg-gray-100 border-4 border-gray-400 rounded-lg overflow-hidden shadow-lg w-full aspect-square flex items-center justify-center ${zoomedImage === 2 ? 'zoom-in' : ''}`}
+              onClick={() =></div> handleImageClick(2)}
+            >
+              <img 
+                src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxEsEAwQCQoKCAoKDwkKDA8LDA0KCAoMDAwLDAkLDA8LDAwMDAkMDAwMDAwMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwYDAwwMDAYDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCADIAMgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==" 
+                alt="Board Rangkaian Listrik"
+                className="image-img"
+              />
+              <div className="zoom-badge">🔍 Klik untuk zoom</div>
+            </div>
+            <div className="mt-4 bg-orange-50 p-4 rounded-lg border-2 border-orange-300 w-full">
+              <p className="text-sm text-gray-800"><span className="font-bold">Board Bawah:</span> Tampilan rangkaian listrik dengan susunan seri-paralel kompleks. Menampilkan breadboard dengan kabel tembaga merah (positif) dan hitam (negatif), resistor, dan jalur arus yang tersebar ke semua LED.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Diagram Alur Arus */}
+        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg border-2 border-indigo-300 mb-8">
+          <h3 className="text-xl font-bold text-indigo-900 mb-6">⚡ ALUR ARUS LISTRIK & KONFIGURASI RANGKAIAN</h3>
+          
+          <div className="mb-6">
+            <svg viewBox="0 0 800 200" className="w-full border-2 border-indigo-300 rounded-lg bg-white p-4">
+              {/* Baterai */}
+              <rect x="30" y="60" width="50" height="80" fill="#FF6B6B" stroke="#333" strokeWidth="2"/>
+              <text x="55" y="105" textAnchor="middle" className="text-sm font-bold">9V</text>
+              
+              {/* Arrow 1 */}
+              <path d="M 80 100 L 120 100" stroke="#E53E3E" strokeWidth="3" markerEnd="url(#arrowhead)"/>
+              <text x="100" y="85" textAnchor="middle" className="text-xs font-bold fill-red-600">Positif</text>
+              
+              {/* Saklar */}
+              <circle cx="140" cy="100" r="20" fill="white" stroke="#333" strokeWidth="2"/>
+              <text x="140" y="105" textAnchor="middle" className="text-sm font-bold">SW</text>
+              
+              {/* Arrow 2 */}
+              <path d="M 160 100 L 200 100" stroke="#E53E3E" strokeWidth="3" markerEnd="url(#arrowhead)"/>
+              <text x="180" y="85" textAnchor="middle" className="text-xs font-bold fill-red-600">Kontrol</text>
+              
+              {/* Resistor */}
+              <rect x="200" y="85" width="60" height="30" fill="#FFD93D" stroke="#333" strokeWidth="2"/>
+              <text x="230" y="105" textAnchor="middle" className="text-xs font-bold">1kΩ</text>
+              
+              {/* Arrow 3 */}
+              <path d="M 260 100 L 300 100" stroke="#E53E3E" strokeWidth="3" markerEnd="url(#arrowhead)"/>
+              <text x="280" y="85" textAnchor="middle" className="text-xs font-bold fill-red-600">Proteksi</text>
+              
+              {/* LED Paralel */}
+              <circle cx="330" cy="80" r="15" fill="#FF4444" stroke="#333" strokeWidth="2"/>
+              <text x="330" y="85" textAnchor="middle" className="text-xs text-white font-bold">L1</text>
+              
+              <circle cx="330" cy="120" r="15" fill="#FF4444" stroke="#333" strokeWidth="2"/>
+              <text x="330" y="125" textAnchor="middle" className="text-xs text-white font-bold">L2</text>
+              
+              <circle cx="380" cy="100" r="15" fill="#FF4444" stroke="#333" strokeWidth="2"/>
+              <text x="380" y="105" textAnchor="middle" className="text-xs text-white font-bold">L3+</text>
+              
+              {/* Arrow 4 */}
+              <path d="M 395 100 L 430 100" stroke="#2F855A" strokeWidth="3" markerEnd="url(#arrowhead2)"/>
+              <text x="412" y="85" textAnchor="middle" className="text-xs font-bold fill-green-600">Paralel</text>
+              
+              {/* Ground */}
+              <line x1="450" y1="95" x2="450" y2="145" stroke="#2F855A" strokeWidth="3"/>
+              <line x1="430" y1="145" x2="470" y2="145" stroke="#2F855A" strokeWidth="3"/>
+              <line x1="437" y1="155" x2="463" y2="155" stroke="#2F855A" strokeWidth="2"/>
+              <line x1="442" y1="165" x2="458" y2="165" stroke="#2F855A" strokeWidth="2"/>
+              <text x="450" y="180" textAnchor="middle" className="text-xs font-bold fill-green-700">GND</text>
+              
+              {/* SVG Marker Definitions */}
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                  <polygon points="0 0, 10 3, 0 6" fill="#E53E3E"/>
+                </marker>
+                <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                  <polygon points="0 0, 10 3, 0 6" fill="#2F855A"/>
+                </marker>
+              </defs>
+            </svg>
+          </div>
+
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white p-3 rounded-lg border border-indigo-300">
+              <p className="font-bold text-sm text-indigo-900">Baterai</p>
+              <p className="text-xs text-gray-700">Sumber daya 9V</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border border-indigo-300">
+              <p className="font-bold text-sm text-indigo-900">Saklar (SERI)</p>
+              <p className="text-xs text-gray-700">Kontrol on/off</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border border-indigo-300">
+              <p className="font-bold text-sm text-indigo-900">Resistor (SERI)</p>
+              <p className="text-xs text-gray-700">Proteksi arus</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border border-indigo-300">
+              <p className="font-bold text-sm text-indigo-900">LED (PARALEL)</p>
+              <p className="text-xs text-gray-700">Distribusi daya</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Prinsip Kerja */}
+        <div className="bg-gradient-to-r from-green-100 to-emerald-100 p-6 rounded-lg border-2 border-green-400 mb-8">
+          <h3 className="text-xl font-bold text-green-900 mb-4">⚡ PRINSIP KERJA SISTEM</h3>
+          <div className="grid grid-cols-3 gap-6">
+            <div className="bg-white p-4 rounded-lg border border-green-400">
+              <p className="font-bold text-gray-800 mb-2">1️⃣ Saklar NYALA</p>
+              <p className="text-sm text-gray-700">Arus mengalir dari baterai melalui saklar ke resistor dan LED paralel</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg border border-green-400">
+              <p className="font-bold text-gray-800 mb-2">2️⃣ Resistor Bekerja</p>
+              <p className="text-sm text-gray-700">Membatasi arus agar setiap LED mendapat daya yang aman dan optimal</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg border border-green-400">
+              <p className="font-bold text-gray-800 mb-2">3️⃣ Semua LED Menyala</p>
+              <p className="text-sm text-gray-700">Konfigurasi paralel memastikan semua lampu di perumahan hidup bersamaan</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Keuntungan Rangkaian Campuran */}
+        <div className="bg-gradient-to-r from-rose-100 to-pink-100 p-6 rounded-lg border-2 border-rose-400 mb-8">
+          <h3 className="text-xl font-bold text-rose-900 mb-4">✨ KEUNTUNGAN RANGKAIAN CAMPURAN PADA PROYEK INI</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-white p-4 rounded-lg border border-rose-400">
+              <p className="font-bold text-center text-sm text-gray-800">💡 Kontrol Terpusat</p>
+              <p className="text-xs text-center text-gray-700 mt-2">Satu saklar mengontrol semua lampu perumahan</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg border border-rose-400">
+              <p className="font-bold text-center text-sm text-gray-800">🔒 Proteksi Aman</p>
+              <p className="text-xs text-center text-gray-700 mt-2">Resistor melindungi setiap LED dari arus berlebih</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg border border-rose-400">
+              <p className="font-bold text-center text-sm text-gray-800">⚙️ Fleksibel</p>
+              <p className="text-xs text-center text-gray-700 mt-2">Mudah menambah/mengurangi lampu</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg border border-rose-400">
+              <p className="font-bold text-center text-sm text-gray-800">🎯 Andal</p>
+              <p className="text-xs text-center text-gray-700 mt-2">LED rusak tidak mematikan seluruh sistem</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 text-center text-sm text-gray-600 border-t-2 pt-4 bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
+          <p className="font-bold text-gray-800 mb-2">Rekayasa Kompleks Perumahan | Sistem Penerangan Terintegrasi</p>
+          <p className="text-xs text-gray-700">Makalah Fisika Dasar - Rangkaian Campuran (Seri-Paralel)</p>
+          <p className="mt-3 text-xs text-gray-600 italic">Kombinasi Seri (Kontrol) + Paralel (Distribusi Daya) = Sistem Efisien & Aman</p>
+        </div>
+      </div>
+    </div>
+  );
+}

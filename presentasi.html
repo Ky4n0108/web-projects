@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linked List - Presentasi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .presentation-container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            min-height: 600px;
+            padding: 60px;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 24px;
+            margin: 20px 0 10px 0;
+        }
+
+        p, li {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-left: 30px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 24px;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        .visual-box {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .node-demo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px;
+        }
+
+        .node {
+            background: #667eea;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .arrow {
+            font-size: 36px;
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .null {
+            color: #999;
+            font-size: 24px;
+            font-style: italic;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #68d391;
+            padding: 25px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .advantage {
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        .disadvantage {
+            color: #f56565;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-number {
+            color: #666;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .example-box {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Cover -->
+        <div class="slide active">
+            <h1>📚 LINKED LIST</h1>
+            <p class="subtitle">Struktur Data Linear Dinamis</p>
+            <div class="visual-box" style="margin-top: 80px;">
+                <div class="node-demo">
+                    <div class="node">10</div>
+                    <div class="arrow">→</div>
+                    <div class="node">20</div>
+                    <div class="arrow">→</div>
+                    <div class="node">30</div>
+                    <div class="arrow">→</div>
+                    <div class="null">NULL</div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 80px; font-size: 22px; color: #666;">
+                Materi Struktur Data dan Algoritma<br>
+                Pemrograman C++
+            </p>
+            <div class="example-box" style="margin-top: 40px; background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Selamat pagi/siang teman-teman. Hari ini saya akan mempresentasikan materi tentang Linked List, salah satu struktur data fundamental dalam pemrograman. Mari kita mulai memahami konsep yang sangat penting ini."</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Apa itu Linked List -->
+        <div class="slide">
+            <h2>🤔 Apa itu Linked List?</h2>
+            <p><strong>Linked List</strong> adalah struktur data linear yang terdiri dari node-node yang saling terhubung melalui pointer.</p>
+            
+            <h3>Karakteristik Utama:</h3>
+            <ul>
+                <li>Setiap node menyimpan <span class="highlight">data</span> dan <span class="highlight">pointer</span> ke node berikutnya</li>
+                <li>Ukuran <strong>dinamis</strong> - bisa bertambah/berkurang saat runtime</li>
+                <li>Tidak memerlukan memory yang berurutan</li>
+                <li>Node pertama disebut <span class="highlight">HEAD</span></li>
+                <li>Node terakhir menunjuk ke <span class="highlight">NULL</span></li>
+            </ul>
+
+            <div class="visual-box" style="margin-top: 40px;">
+                <p style="margin-bottom: 20px; font-weight: bold; color: #667eea;">Visualisasi Linked List:</p>
+                <div class="node-demo">
+                    <div style="text-align: center;">
+                        <div class="node">5</div>
+                        <p style="margin-top: 10px; font-size: 14px;">HEAD</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="node">12</div>
+                    <div class="arrow">→</div>
+                    <div class="node">8</div>
+                    <div class="arrow">→</div>
+                    <div class="node">25</div>
+                    <div class="arrow">→</div>
+                    <div class="null">NULL</div>
+                </div>
+            </div>
+            <div class="example-box" style="margin-top: 20px; background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Jadi apa sebenarnya linked list itu? Linked list adalah struktur data linear yang tersusun dari node-node yang saling terhubung menggunakan pointer. Berbeda dengan array, linked list memiliki ukuran yang dinamis dan flexibel. Perhatikan visualisasi di layar, setiap kotak adalah node yang berisi data, dan panah menunjukkan pointer yang menghubungkan ke node berikutnya. Node pertama disebut HEAD, dan node terakhir selalu menunjuk ke NULL sebagai penanda akhir list."</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Struktur Node -->
+        <div class="slide">
+            <h2>🔧 Struktur Node dalam C++</h2>
+            
+            <p>Node adalah building block dari linked list. Setiap node memiliki 2 komponen:</p>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3>1️⃣ Data</h3>
+                    <p>Menyimpan nilai/informasi</p>
+                </div>
+                <div class="card">
+                    <h3>2️⃣ Pointer Next</h3>
+                    <p>Menunjuk ke node berikutnya</p>
+                </div>
+            </div>
+
+            <div class="code-box">
+struct Node {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int data;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Menyimpan nilai<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* next;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Pointer ke node berikutnya<br>
+};
+            </div>
+
+            <div class="example-box">
+                <h3>💡 Contoh Membuat Node:</h3>
+                <div class="code-box">
+// Membuat node baru<br>
+Node* newNode = new Node();<br>
+newNode->data = 10;<br>
+newNode->next = nullptr;
+                </div>
+            </div>
+            <div class="example-box" style="margin-top: 20px; background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Sekarang mari kita lihat bagaimana struktur node dalam C++. Node adalah komponen dasar dari linked list, seperti batu bata dalam sebuah bangunan. Setiap node memiliki dua bagian penting: pertama, variabel data yang menyimpan nilai, dan kedua, pointer next yang menunjuk ke node berikutnya. Perhatikan contoh kode di layar - inilah cara kita mendefinisikan dan membuat node baru dalam C++. Cukup sederhana bukan?"</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Jenis-jenis Linked List -->
+        <div class="slide">
+            <h2>📋 Jenis-Jenis Linked List</h2>
+            
+            <h3>1. Singly Linked List</h3>
+            <p>Setiap node hanya punya pointer ke node berikutnya</p>
+            <div class="visual-box">
+                <div class="node-demo">
+                    <div class="node">A</div>
+                    <div class="arrow">→</div>
+                    <div class="node">B</div>
+                    <div class="arrow">→</div>
+                    <div class="node">C</div>
+                    <div class="arrow">→</div>
+                    <div class="null">NULL</div>
+                </div>
+            </div>
+
+            <h3>2. Doubly Linked List</h3>
+            <p>Setiap node punya pointer ke node berikutnya DAN sebelumnya</p>
+            <div class="visual-box">
+                <div class="node-demo">
+                    <div class="null">NULL</div>
+                    <div class="arrow">←</div>
+                    <div class="node">A</div>
+                    <div class="arrow">⇄</div>
+                    <div class="node">B</div>
+                    <div class="arrow">⇄</div>
+                    <div class="node">C</div>
+                    <div class="arrow">→</div>
+                    <div class="null">NULL</div>
+                </div>
+            </div>
+
+            <h3>3. Circular Linked List</h3>
+            <p>Node terakhir menunjuk kembali ke node pertama</p>
+            <div class="visual-box">
+                <div class="node-demo">
+                    <div class="node">A</div>
+                    <div class="arrow">→</div>
+                    <div class="node">B</div>
+                    <div class="arrow">→</div>
+                    <div class="node">C</div>
+                    <div class="arrow">↻</div>
+                </div>
+            </div>
+            <div class="example-box" style="margin-top: 20px; background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Linked list memiliki tiga jenis utama. Pertama, Singly Linked List - yang paling sederhana, dimana setiap node hanya memiliki pointer ke depan. Kedua, Doubly Linked List - lebih kompleks karena setiap node punya dua pointer, bisa bergerak maju dan mundur. Ketiga, Circular Linked List - dimana node terakhir menunjuk kembali ke node pertama, membentuk sebuah lingkaran. Masing-masing jenis punya kegunaan dan kelebihan tersendiri."</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Operasi Insert -->
+        <div class="slide">
+            <h2>➕ Operasi INSERT</h2>
+            
+            <h3>1. Insert di Awal (Head)</h3>
+            <div class="code-box">
+void insertAtHead(Node*& head, int value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* newNode = new Node();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;newNode->data = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;newNode->next = head;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;head = newNode;<br>
+}<br>
+// Time Complexity: O(1)
+            </div>
+
+            <h3>2. Insert di Akhir (Tail)</h3>
+            <div class="code-box">
+void insertAtTail(Node*& head, int value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* newNode = new Node();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;newNode->data = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;newNode->next = nullptr;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (head == nullptr) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;head = newNode;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* temp = head;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;while (temp->next != nullptr)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp = temp->next;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;temp->next = newNode;<br>
+}<br>
+// Time Complexity: O(n)
+            </div>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Mari kita bahas operasi paling dasar: INSERT atau menambah data. Ada dua cara utama. Pertama, insert di awal atau head - ini sangat efisien dengan kompleksitas O(1) karena kita hanya perlu membuat node baru dan menghubungkannya ke head lama. Kedua, insert di akhir atau tail - ini membutuhkan waktu O(n) karena kita harus traversal dari head sampai node terakhir. Perhatikan perbedaan kode keduanya di layar."</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Operasi Delete -->
+        <div class="slide">
+            <h2>➖ Operasi DELETE</h2>
+            
+            <h3>1. Delete dari Awal</h3>
+            <div class="code-box">
+void deleteFromHead(Node*& head) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (head == nullptr) return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* temp = head;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;head = head->next;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;delete temp;<br>
+}<br>
+// Time Complexity: O(1)
+            </div>
+
+            <h3>2. Delete by Value</h3>
+            <div class="code-box">
+void deleteByValue(Node*& head, int value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (head == nullptr) return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (head->data == value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Node* temp = head;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;head = head->next;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete temp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* temp = head;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;while (temp->next != nullptr && <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp->next->data != value)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp = temp->next;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (temp->next == nullptr) return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* toDelete = temp->next;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;temp->next = temp->next->next;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;delete toDelete;<br>
+}
+            </div>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Selanjutnya operasi DELETE. Sama seperti insert, delete dari awal sangat cepat dengan O(1) - kita hanya perlu menggeser head pointer dan menghapus node lama. Untuk delete berdasarkan nilai tertentu, kita perlu mencari node tersebut dulu, jadi kompleksitasnya O(n). Yang penting dalam delete adalah jangan lupa membebaskan memory dengan perintah delete untuk menghindari memory leak."</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Operasi Traversal -->
+        <div class="slide">
+            <h2>🔍 Operasi TRAVERSAL & SEARCH</h2>
+            
+            <h3>Display/Print Linked List</h3>
+            <div class="code-box">
+void display(Node* head) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* temp = head;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;while (temp != nullptr) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout << temp->data << " -> ";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp = temp->next;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cout << "NULL" << endl;<br>
+}<br>
+// Time Complexity: O(n)
+            </div>
+
+            <h3>Search Element</h3>
+            <div class="code-box">
+Node* search(Node* head, int value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Node* temp = head;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;while (temp != nullptr) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (temp->data == value)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return temp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temp = temp->next;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return nullptr;<br>
+}<br>
+// Time Complexity: O(n)
+            </div>
+
+            <div class="example-box">
+                <p><strong>💡 Catatan:</strong> Traversal berarti mengunjungi setiap node dari awal sampai akhir.</p>
+            </div>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Untuk melihat isi linked list atau mencari data tertentu, kita perlu melakukan traversal - yaitu mengunjungi setiap node satu per satu dari head sampai NULL. Fungsi display menampilkan semua data, sedangkan fungsi search mencari nilai tertentu. Kedua operasi ini memiliki kompleksitas O(n) karena dalam worst case kita harus mengecek semua node. Ini berbeda dengan array yang bisa langsung akses index tertentu."</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Perbandingan Array vs Linked List -->
+        <div class="slide">
+            <h2>⚖️ Array vs Linked List</h2>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Aspek</th>
+                    <th>Array</th>
+                    <th>Linked List</th>
+                </tr>
+                <tr>
+                    <td><strong>Memory</strong></td>
+                    <td>Berurutan (contiguous)</td>
+                    <td>Tidak berurutan</td>
+                </tr>
+                <tr>
+                    <td><strong>Ukuran</strong></td>
+                    <td>Tetap (fixed)</td>
+                    <td>Dinamis</td>
+                </tr>
+                <tr>
+                    <td><strong>Akses Element</strong></td>
+                    <td class="advantage">O(1) - Cepat</td>
+                    <td class="disadvantage">O(n) - Lambat</td>
+                </tr>
+                <tr>
+                    <td><strong>Insert di Awal</strong></td>
+                    <td class="disadvantage">O(n)</td>
+                    <td class="advantage">O(1)</td>
+                </tr>
+                <tr>
+                    <td><strong>Insert di Akhir</strong></td>
+                    <td class="advantage">O(1)</td>
+                    <td class="disadvantage">O(n)</td>
+                </tr>
+                <tr>
+                    <td><strong>Delete di Awal</strong></td>
+                    <td class="disadvantage">O(n)</td>
+                    <td class="advantage">O(1)</td>
+                </tr>
+                <tr>
+                    <td><strong>Memory Waste</strong></td>
+                    <td>Bisa banyak jika tidak terpakai</td>
+                    <td>Minimal (sesuai kebutuhan)</td>
+                </tr>
+            </table>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Sekarang mari kita bandingkan linked list dengan array. Keduanya punya kelebihan masing-masing. Array unggul dalam akses random dengan O(1), tapi lemah dalam insert dan delete yang memerlukan shifting data. Sebaliknya, linked list sangat cepat untuk insert dan delete di awal, tapi lambat untuk akses karena harus traversal. Array punya ukuran tetap, sementara linked list bisa berkembang dinamis sesuai kebutuhan. Tidak ada yang lebih baik mutlak - semuanya tergantung kebutuhan aplikasi kita."</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Kelebihan dan Kekurangan -->
+        <div class="slide">
+            <h2>✅ Kelebihan & ❌ Kekurangan</h2>
+            
+            <div class="grid-2">
+                <div>
+                    <h3 style="color: #48bb78;">✅ Kelebihan</h3>
+                    <ul>
+                        <li><strong>Ukuran Dinamis</strong> - bisa membesar/mengecil sesuai kebutuhan</li>
+                        <li><strong>Insert/Delete Efisien</strong> - terutama di awal list (O(1))</li>
+                        <li><strong>Memory Efficient</strong> - tidak ada memory yang terbuang</li>
+                        <li><strong>Implementasi Mudah</strong> - untuk stack dan queue</li>
+                        <li><strong>Tidak perlu reorganisasi</strong> - saat insert/delete</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 style="color: #f56565;">❌ Kekurangan</h3>
+                    <ul>
+                        <li><strong>Akses Lambat</strong> - tidak bisa random access (harus traversal)</li>
+                        <li><strong>Extra Memory</strong> - untuk pointer di setiap node</li>
+                        <li><strong>Tidak Cache-Friendly</strong> - node tersebar di memory</li>
+                        <li><strong>Reverse Traversal Sulit</strong> - pada singly linked list</li>
+                        <li><strong>Pencarian Lambat</strong> - harus linear search O(n)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Mari kita rangkum kelebihan dan kekurangan linked list. Di sisi positif, linked list sangat fleksibel dengan ukuran dinamis, operasi insert dan delete yang cepat, dan penggunaan memory yang efisien tanpa waste. Namun ada trade-off - akses data lebih lambat karena harus traversal, ada overhead memory untuk pointer, dan pencarian linear yang kurang efisien. Memahami trade-off ini penting untuk memilih struktur data yang tepat."</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Kapan Menggunakan -->
+        <div class="slide">
+            <h2>🎯 Kapan Menggunakan Linked List?</h2>
+            
+            <div class="card" style="margin-bottom: 30px;">
+                <h3 style="color: #48bb78;">✅ Gunakan Linked List Ketika:</h3>
+                <ul>
+                    <li>Ukuran data tidak diketahui atau sering berubah</li>
+                    <li>Sering melakukan insert/delete di awal atau tengah list</li>
+                    <li>Tidak perlu akses random/by index</li>
+                    <li>Implementasi stack, queue, atau hash table (chaining)</li>
+                    <li>Memory terbatas dan ingin efisien (tidak ada waste)</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3 style="color: #f56565;">❌ Gunakan Array Ketika:</h3>
+                <ul>
+                    <li>Perlu akses cepat by index (random access)</li>
+                    <li>Ukuran data relatif tetap dan diketahui</li>
+                    <li>Operasi utama hanya di akhir (push/pop)</li>
+                    <li>Memory locality penting (cache performance)</li>
+                    <li>Sering melakukan pencarian atau sorting</li>
+                </ul>
+            </div>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Pertanyaan penting: kapan kita harus menggunakan linked list? Gunakan linked list ketika ukuran data tidak pasti dan sering berubah, ketika kita sering insert atau delete data di awal atau tengah, atau ketika kita implementasi struktur data seperti stack dan queue. Sebaliknya, pakai array ketika perlu akses cepat by index, ukuran data relatif tetap, atau sering melakukan pencarian dan sorting. Pemilihan yang tepat akan membuat program kita lebih efisien."</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Aplikasi Linked List -->
+        <div class="slide">
+            <h2>🚀 Aplikasi Linked List</h2>
+            
+            <h3>1. Browser History</h3>
+            <p>Tombol Back dan Forward menggunakan doubly linked list untuk navigasi.</p>
+
+            <h3>2. Music Playlist</h3>
+            <p>Circular linked list untuk previous/next song dan repeat mode.</p>
+
+            <h3>3. Undo/Redo Functionality</h3>
+            <p>Editor teks menggunakan linked list untuk menyimpan history perubahan.</p>
+
+            <h3>4. Image Viewer</h3>
+            <p>Next/Previous image menggunakan circular linked list.</p>
+
+            <h3>5. Hash Table dengan Chaining</h3>
+            <p>Menangani collision dengan linked list pada setiap bucket.</p>
+
+            <h3>6. Implementasi Stack & Queue</h3>
+            <p>Struktur data lain yang dibangun menggunakan linked list.</p>
+
+            <div class="example-box" style="margin-top: 30px;">
+                <p><strong>💡 Fun Fact:</strong> Sistem operasi menggunakan linked list untuk mengelola process scheduling dan memory management!</p>
+            </div>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Linked list bukan hanya teori - dia digunakan di mana-mana dalam aplikasi nyata! Browser menggunakan doubly linked list untuk history back dan forward. Music player menggunakan circular linked list untuk playlist yang bisa repeat. Text editor menggunakan linked list untuk fitur undo dan redo. Bahkan sistem operasi menggunakan linked list untuk manajemen proses dan memory. Jadi ini benar-benar konsep yang powerful dan praktis!"</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Kesimpulan -->
+        <div class="slide">
+            <h2>📝 Kesimpulan</h2>
+            
+            <div class="visual-box" style="padding: 40px;">
+                <h3 style="color: #667eea; text-align: center; margin-bottom: 30px;">Key Takeaways</h3>
+                
+                <ul style="font-size: 22px; line-height: 2;">
+                    <li><strong>Linked List</strong> adalah struktur data linear dengan node yang terhubung via pointer</li>
+                    <li>Ada 3 jenis utama: <span class="highlight">Singly</span>, <span class="highlight">Doubly</span>, dan <span class="highlight">Circular</span></li>
+                    <li>Operasi utama: <strong>Insert</strong>, <strong>Delete</strong>, <strong>Search</strong>, <strong>Traversal</strong></li>
+                    <li>Keunggulan: <strong>dinamis</strong>, insert/delete di awal <strong>O(1)</strong></li>
+                    <li>Kelemahan: akses element <strong>O(n)</strong>, perlu extra memory untuk pointer</li>
+                    <li>Cocok untuk data yang ukurannya sering berubah dan banyak insert/delete</li>
+                </ul>
+            </div>
+
+            <div class="example-box" style="margin-top: 40px; background: #fef3c7; border-color: #f59e0b;">
+                <p style="text-align: center; font-size: 20px;">
+                    <strong>🎓 Latihan:</strong> Coba implementasikan linked list sendiri dan eksperimen dengan berbagai operasi!
+                </p>
+            </div>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Baik, mari kita simpulkan. Linked list adalah struktur data yang powerful dengan node-node yang terhubung via pointer. Ada tiga jenis utama dengan karakteristik berbeda. Operasi dasarnya meliputi insert, delete, search, dan traversal. Kelebihannya adalah fleksibilitas dan efisiensi dalam operasi tertentu, meski ada trade-off dalam hal akses data. Pemahaman yang baik tentang linked list akan sangat membantu dalam memilih struktur data yang tepat untuk masalah yang kita hadapi."</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Terima Kasih -->
+        <div class="slide">
+            <div style="text-align: center; padding: 100px 0;">
+                <h1 style="font-size: 72px; margin-bottom: 30px;">🙏</h1>
+                <h1>Terima Kasih!</h1>
+                <p class="subtitle" style="margin-top: 40px;">Semoga Bermanfaat</p>
+                
+                <div class="visual-box" style="margin-top: 80px;">
+                    <p style="font-size: 24px; color: #667eea; font-weight: bold;">
+                        "Practice makes perfect!"
+                    </p>
+                    <p style="margin-top: 20px; font-size: 18px;">
+                        Terus berlatih dan eksplorasi linked list<br>
+                        untuk menguasai struktur data ini dengan baik.
+                    </p>
+                </div>
+
+                <div style="margin-top: 60px;">
+                    <p style="font-size: 20px; color: #666;">
+                        💻 Happy Coding! 💻
+                    </p>
+                </div>
+            </div>
+            <div class="example-box" style="background: #e0e7ff; border-color: #667eea;">
+                <p style="font-size: 16px; line-height: 1.8;"><strong>📢 Script:</strong> "Baik teman-teman, sekian presentasi saya tentang Linked List. Saya harap materi ini bermanfaat dan memberikan pemahaman yang jelas tentang konsep linked list. Ingat, untuk benar-benar menguasai linked list, kalian harus praktik sendiri - coba implementasikan berbagai operasi dan eksperimen dengan kode. Jika ada pertanyaan, silakan. Terima kasih atas perhatiannya. Happy coding!"</p>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="prevBtn" onclick="changeSlide(-1)">← Sebelumnya</button>
+            <span class="slide-number"><span id="currentSlide">1</span> / <span id="totalSlides">13</span></span>
+            <button id="nextBtn" onclick="changeSlide(1)">Selanjutnya →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide;
+            
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+        }
+        
+        function changeSlide(n) {
+            currentSlide += n;
+            showSlide(currentSlide);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+        
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

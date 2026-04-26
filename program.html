@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel Statistika & Probabilitas — Program Latihan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1a2332;
+    --border: #1e2d42;
+    --accent: #00d4aa;
+    --accent2: #ff6b35;
+    --accent3: #7c3aed;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 20px 60px; }
+
+  /* HEADER */
+  header {
+    padding: 40px 0 30px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(26px, 5vw, 42px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); margin-top: 10px; font-size: 15px; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .progress-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .progress-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #00a87d); border-radius: 3px; transition: width 0.5s ease; }
+  .progress-score { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: var(--accent); white-space: nowrap; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab.active { background: var(--accent); color: var(--bg); font-weight: 600; }
+  .tab:hover:not(.active) { color: var(--text); background: var(--border); }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* LESSON CARD */
+  .lesson-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .lesson-card:hover { border-color: rgba(0,212,170,0.3); }
+  .lesson-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+  }
+  .lesson-icon {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .lesson-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; flex: 1; }
+  .lesson-meta { font-size: 12px; color: var(--muted); }
+  .chevron { color: var(--muted); transition: transform 0.3s; font-size: 12px; }
+  .lesson-card.open .chevron { transform: rotate(180deg); }
+
+  .lesson-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .lesson-card.open .lesson-body { display: block; }
+
+  /* FORMULA TABLE */
+  .formula-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .formula-table th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .formula-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .formula-table tr:last-child td { border-bottom: none; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(0,212,170,0.08);
+    border: 1px solid rgba(0,212,170,0.15);
+    color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* TIP BOX */
+  .tip-box {
+    background: rgba(0,212,170,0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: #a7f3d0;
+  }
+  .tip-box strong { color: var(--accent); }
+
+  /* QUIZ SECTION */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .quiz-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary { background: var(--accent); color: var(--bg); }
+  .btn-primary:hover { background: #00b894; transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .q-text { font-size: 15px; font-weight: 500; line-height: 1.6; margin-bottom: 6px; }
+  .q-context {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent2);
+    background: rgba(255,107,53,0.08);
+    border: 1px solid rgba(255,107,53,0.15);
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin: 12px 0 16px;
+  }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+  }
+  .option:hover:not(.locked) { border-color: var(--accent); background: rgba(0,212,170,0.05); }
+  .option.correct { border-color: var(--green); background: rgba(34,197,94,0.1); color: var(--green); }
+  .option.wrong { border-color: var(--red); background: rgba(239,68,68,0.1); color: #fca5a5; }
+  .option.locked { cursor: default; }
+  .opt-label {
+    width: 22px; height: 22px;
+    border-radius: 3px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .option.correct .opt-label { background: var(--green); color: var(--bg); }
+  .option.wrong .opt-label { background: var(--red); color: white; }
+
+  .feedback-box {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct-fb { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); }
+  .feedback-box.wrong-fb { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); }
+
+  /* PRACTICE SECTION */
+  .exercise-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .exercise-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .exercise-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+  .data-display {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .answer-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+  .answer-label { font-size: 13px; color: var(--muted); min-width: 120px; }
+  .answer-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    width: 200px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .answer-input:focus { border-color: var(--accent); }
+  .answer-input.correct { border-color: var(--green); background: rgba(34,197,94,0.05); }
+  .answer-input.wrong { border-color: var(--red); background: rgba(239,68,68,0.05); }
+  .check-btn {
+    padding: 8px 16px;
+    background: var(--accent3);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .check-btn:hover { background: #6d28d9; }
+  .result-msg { font-size: 12px; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+  .result-msg.ok { color: var(--green); }
+  .result-msg.no { color: var(--red); }
+
+  /* CHEATSHEET */
+  .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .cheat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .cheat-card:hover { border-color: rgba(0,212,170,0.3); }
+  .cheat-category {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .cheat-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid var(--border); gap: 10px; }
+  .cheat-item:last-child { border-bottom: none; }
+  .cheat-name { font-size: 12px; color: var(--text); }
+  .cheat-code { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-align: right; }
+
+  /* RESULTS */
+  .result-screen {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .result-big { font-family: 'Syne', sans-serif; font-size: 72px; font-weight: 800; color: var(--accent); }
+  .result-label { font-size: 16px; color: var(--muted); margin: 8px 0 24px; }
+  .result-breakdown {
+    display: inline-flex;
+    gap: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 28px;
+    margin-bottom: 28px;
+  }
+  .rb-item { text-align: center; }
+  .rb-num { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; }
+  .rb-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* SCROLL */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media(max-width:600px) {
+    .tabs { gap: 2px; }
+    .tab { padding: 7px 10px; font-size: 12px; }
+    .formula-table { font-size: 12px; }
+    .option { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="header-badge">PROGRAM LATIHAN</div>
+    <h1>Excel <span>Statistika</span> &<br>Probabilitas</h1>
+    <p class="subtitle">Pelajari, latih, dan kuasai semua fungsi statistik Excel secara interaktif.</p>
+  </header>
+
+  <div class="progress-bar-wrap">
+    <span class="progress-label">PROGRES</span>
+    <div class="progress-track"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <span class="progress-score" id="progScore">0 / 20</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('materi')">📚 Materi</button>
+    <button class="tab" onclick="switchTab('quiz')">🧠 Kuis</button>
+    <button class="tab" onclick="switchTab('latihan')">🔢 Latihan Hitung</button>
+    <button class="tab" onclick="switchTab('cheat')">📋 Rangkuman</button>
+  </div>
+
+  <!-- ===== MATERI ===== -->
+  <div class="section active" id="sec-materi">
+
+    <!-- STATISTIK DESKRIPTIF -->
+    <div class="lesson-card" id="lc1">
+      <div class="lesson-header" onclick="toggleLesson('lc1')">
+        <div class="lesson-icon" style="background:rgba(0,212,170,0.1);">📊</div>
+        <div>
+          <div class="lesson-title">Statistik Deskriptif</div>
+          <div class="lesson-meta">AVERAGE · MEDIAN · MODE · STDEV · VAR</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="lesson-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7">Statistik deskriptif digunakan untuk <strong style="color:var(--text)">meringkas dan menggambarkan</strong> data. Ini adalah fondasi utama analisis data di Excel.</p>
+        <table class="formula-table">
+          <tr><th>Fungsi</th><th>Kegunaan</th><th>Contoh Formula</th></tr>
+          <tr><td><code>=AVERAGE()</code></td><td>Rata-rata aritmatika</td><td><code>=AVERAGE(A1:A10)</code></td></tr>
+          <tr><td><code>=MEDIAN()</code></td><td>Nilai tengah data</td><td><code>=MEDIAN(A1:A10)</code></td></tr>
+          <tr><td><code>=MODE.SNGL()</code></td><td>Nilai paling sering muncul</td><td><code>=MODE.SNGL(A1:A10)</code></td></tr>
+          <tr><td><code>=STDEV.S()</code></td><td>Standar deviasi sampel</td><td><code>=STDEV.S(A1:A10)</code></td></tr>
+          <tr><td><code>=STDEV.P()</code></td><td>Standar deviasi populasi</td><td><code>=STDEV.P(A1:A10)</code></td></tr>
+          <tr><td><code>=VAR.S()</code></td><td>Varians sampel</td><td><code>=VAR.S(A1:A10)</code></td></tr>
+          <tr><td><code>=SKEW()</code></td><td>Kemiringan distribusi</td><td><code>=SKEW(A1:A10)</code></td></tr>
+          <tr><td><code>=KURT()</code></td><td>Keruncingan (kurtosis)</td><td><code>=KURT(A1:A10)</code></td></tr>
+        </table>
+        <div class="tip-box">💡 <strong>Tips:</strong> Gunakan <code>=STDEV.S()</code> untuk data <em>sampel</em> (sebagian data), dan <code>=STDEV.P()</code> untuk data <em>populasi</em> (seluruh data). Perbedaannya ada di pembagi: sampel ÷(n-1), populasi ÷n.</div>
+        <div class="tip-box" style="border-color:var(--accent2);background:rgba(255,107,53,0.05);color:#fed7aa;">⚠️ <strong>Perhatian:</strong> <code>MODE.SNGL</code> hanya mengembalikan satu modus. Jika data bimodal, gunakan <code>MODE.MULT</code> dengan Ctrl+Shift+Enter (array formula).</div>
+      </div>
+    </div>
+
+    <!-- UKURAN POSISI -->
+    <div class="lesson-card" id="lc2">
+      <div class="lesson-header" onclick="toggleLesson('lc2')">
+        <div class="lesson-icon" style="background:rgba(124,58,237,0.1);">📐</div>
+        <div>
+          <div class="lesson-title">Ukuran Posisi & Distribusi</div>
+          <div class="lesson-meta">PERCENTILE · QUARTILE · RANK</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="lesson-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7">Ukuran posisi membantu kita memahami <strong style="color:var(--text)">di mana suatu nilai berada</strong> relatif terhadap data lain.</p>
+        <table class="formula-table">
+          <tr><th>Fungsi</th><th>Kegunaan</th><th>Contoh Formula</th></tr>
+          <tr><td><code>=PERCENTILE.INC()</code></td><td>Persentil ke-n (0–1)</td><td><code>=PERCENTILE.INC(A1:A10, 0.75)</code></td></tr>
+          <tr><td><code>=QUARTILE.INC()</code></td><td>Kuartil Q1/Q2/Q3</td><td><code>=QUARTILE.INC(A1:A10, 1)</code></td></tr>
+          <tr><td><code>=RANK.AVG()</code></td><td>Peringkat suatu nilai</td><td><code>=RANK.AVG(B1, A1:A10)</code></td></tr>
+          <tr><td><code>=GEOMEAN()</code></td><td>Rata-rata geometrik</td><td><code>=GEOMEAN(A1:A10)</code></td></tr>
+          <tr><td><code>=HARMEAN()</code></td><td>Rata-rata harmonik</td><td><code>=HARMEAN(A1:A10)</code></td></tr>
+          <tr><td><code>=TRIMMEAN()</code></td><td>Rata-rata terpangkas</td><td><code>=TRIMMEAN(A1:A10, 0.1)</code></td></tr>
+        </table>
+        <div class="tip-box">💡 <strong>Kuartil:</strong> Masukkan angka 1 (Q1), 2 (Q2=median), atau 3 (Q3) pada argumen kedua. Q1–Q3 digunakan untuk menghitung IQR = Q3 − Q1.</div>
+      </div>
+    </div>
+
+    <!-- DISTRIBUSI NORMAL -->
+    <div class="lesson-card" id="lc3">
+      <div class="lesson-header" onclick="toggleLesson('lc3')">
+        <div class="lesson-icon" style="background:rgba(245,158,11,0.1);">🔔</div>
+        <div>
+          <div class="lesson-title">Distribusi Normal</div>
+          <div class="lesson-meta">NORM.DIST · NORM.INV · STANDARDIZE</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="lesson-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7">Distribusi Normal (bell curve) adalah distribusi paling penting dalam statistik. Digunakan untuk probabilitas, interval kepercayaan, dan uji hipotesis.</p>
+        <table class="formula-table">
+          <tr><th>Fungsi</th><th>Kegunaan</th><th>Contoh Formula</th></tr>
+          <tr><td><code>=NORM.DIST()</code></td><td>P(X ≤ x) — nilai kumulatif</td><td><code>=NORM.DIST(75, 70, 10, TRUE)</code></td></tr>
+          <tr><td><code>=NORM.INV()</code></td><td>Nilai x dari probabilitas p</td><td><code>=NORM.INV(0.95, 70, 10)</code></td></tr>
+          <tr><td><code>=NORM.S.DIST()</code></td><td>Distribusi normal standar (Z)</td><td><code>=NORM.S.DIST(1.96, TRUE)</code></td></tr>
+          <tr><td><code>=NORM.S.INV()</code></td><td>Nilai Z dari probabilitas</td><td><code>=NORM.S.INV(0.975)</code></td></tr>
+          <tr><td><code>=STANDARDIZE()</code></td><td>Konversi X ke nilai Z</td><td><code>=STANDARDIZE(75, 70, 10)</code></td></tr>
+        </table>
+        <div class="tip-box">💡 <strong>TRUE vs FALSE:</strong> Argumen terakhir <code>TRUE</code> = kumulatif (luas di bawah kurva dari −∞ sampai x). <code>FALSE</code> = nilai densitas (tinggi kurva di titik x).</div>
+        <div class="tip-box" style="border-color:var(--accent3);background:rgba(124,58,237,0.05);color:#c4b5fd;">🔑 <strong>Rumus Z:</strong> Z = (X − μ) / σ. Nilai Z = 1.96 artinya 97.5% data berada di bawahnya (distribusi normal standar).</div>
+      </div>
+    </div>
+
+    <!-- DISTRIBUSI T, F, CHI -->
+    <div class="lesson-card" id="lc4">
+      <div class="lesson-header" onclick="toggleLesson('lc4')">
+        <div class="lesson-icon" style="background:rgba(239,68,68,0.1);">📉</div>
+        <div>
+          <div class="lesson-title">Distribusi t, Chi-Square & F</div>
+          <div class="lesson-meta">T.DIST · CHISQ.DIST · F.DIST</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="lesson-body">
+        <table class="formula-table">
+          <tr><th>Fungsi</th><th>Kegunaan</th><th>Contoh</th></tr>
+          <tr><td><code>=T.DIST()</code></td><td>Distribusi t (ekor kiri)</td><td><code>=T.DIST(2.5, 9, TRUE)</code></td></tr>
+          <tr><td><code>=T.DIST.2T()</code></td><td>Distribusi t (dua ekor)</td><td><code>=T.DIST.2T(2.5, 9)</code></td></tr>
+          <tr><td><code>=T.INV.2T()</code></td><td>Nilai kritis t (dua ekor)</td><td><code>=T.INV.2T(0.05, 9)</code></td></tr>
+          <tr><td><code>=CHISQ.DIST()</code></td><td>Distribusi Chi-square</td><td><code>=CHISQ.DIST(5.99, 2, TRUE)</code></td></tr>
+          <tr><td><code>=CHISQ.INV()</code></td><td>Nilai kritis chi-square</td><td><code>=CHISQ.INV(0.95, 2)</code></td></tr>
+          <tr><td><code>=F.DIST()</code></td><td>Distribusi F</td><td><code>=F.DIST(3.5, 5, 20, TRUE)</code></td></tr>
+          <tr><td><code>=F.INV()</code></td><td>Nilai kritis F</td><td><code>=F.INV(0.95, 5, 20)</code></td></tr>
+        </table>
+        <div class="tip-box">💡 <strong>df = degrees of freedom</strong> (derajat kebebasan). Untuk sampel n data, df biasanya = n−1. Distribusi t digunakan saat σ tidak diketahui atau n kecil (n &lt; 30).</div>
+      </div>
+    </div>
+
+    <!-- DISTRIBUSI DISKRIT -->
+    <div class="lesson-card" id="lc5">
+      <div class="lesson-header" onclick="toggleLesson('lc5')">
+        <div class="lesson-icon" style="background:rgba(34,197,94,0.1);">🎲</div>
+        <div>
+          <div class="lesson-title">Distribusi Diskrit</div>
+          <div class="lesson-meta">BINOM.DIST · POISSON.DIST · HYPGEOM</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="lesson-body">
+        <table class="formula-table">
+          <tr><th>Fungsi</th><th>Kegunaan</th><th>Contoh</th></tr>
+          <tr><td><code>=BINOM.DIST()</code></td><td>P(X=k) binomial</td><td><code>=BINOM.DIST(3, 10, 0.5, FALSE)</code></td></tr>
+          <tr><td><code>=BINOM.DIST()</code></td><td>P(X≤k) kumulatif</td><td><code>=BINOM.DIST(3, 10, 0.5, TRUE)</code></td></tr>
+          <tr><td><code>=POISSON.DIST()</code></td><td>Distribusi Poisson</td><td><code>=POISSON.DIST(3, 2.5, FALSE)</code></td></tr>
+          <tr><td><code>=HYPGEOM.DIST()</code></td><td>Hipergeometrik</td><td><code>=HYPGEOM.DIST(2, 5, 10, 20, FALSE)</code></td></tr>
+          <tr><td><code>=NEGBINOM.DIST()</code></td><td>Binomial negatif</td><td><code>=NEGBINOM.DIST(5, 3, 0.4, FALSE)</code></td></tr>
+        </table>
+        <div class="tip-box">💡 <strong>Binomial:</strong> <code>=BINOM.DIST(k, n, p, FALSE)</code> di mana k = kejadian sukses, n = jumlah percobaan, p = peluang sukses.</div>
+        <div class="tip-box" style="border-color:var(--yellow);background:rgba(245,158,11,0.05);color:#fde68a;">🎯 <strong>Poisson:</strong> Digunakan untuk menghitung peluang kejadian dalam interval waktu/ruang tertentu. Lambda (λ) adalah rata-rata kejadian per interval.</div>
+      </div>
+    </div>
+
+    <!-- UJI HIPOTESIS -->
+    <div class="lesson-card" id="lc6">
+      <div class="lesson-header" onclick="toggleLesson('lc6')">
+        <div class="lesson-icon" style="background:rgba(0,212,170,0.1);">🔬</div>
+        <div>
+          <div class="lesson-title">Uji Hipotesis & Korelasi</div>
+          <div class="lesson-meta">T.TEST · CORREL · SLOPE · RSQ</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="lesson-body">
+        <table class="formula-table">
+          <tr><th>Fungsi</th><th>Kegunaan</th><th>Contoh</th></tr>
+          <tr><td><code>=T.TEST()</code></td><td>p-value uji t</td><td><code>=T.TEST(A1:A10, B1:B10, 2, 1)</code></td></tr>
+          <tr><td><code>=Z.TEST()</code></td><td>p-value uji Z</td><td><code>=Z.TEST(A1:A10, 50)</code></td></tr>
+          <tr><td><code>=F.TEST()</code></td><td>Uji kesamaan varians</td><td><code>=F.TEST(A1:A10, B1:B10)</code></td></tr>
+          <tr><td><code>=CHISQ.TEST()</code></td><td>Uji chi-square</td><td><code>=CHISQ.TEST(aktual, harapan)</code></td></tr>
+          <tr><td><code>=CORREL()</code></td><td>Korelasi Pearson (r)</td><td><code>=CORREL(A1:A10, B1:B10)</code></td></tr>
+          <tr><td><code>=SLOPE()</code></td><td>Koefisien regresi b₁</td><td><code>=SLOPE(B1:B10, A1:A10)</code></td></tr>
+          <tr><td><code>=INTERCEPT()</code></td><td>Konstanta regresi b₀</td><td><code>=INTERCEPT(B1:B10, A1:A10)</code></td></tr>
+          <tr><td><code>=RSQ()</code></td><td>Koefisien determinasi R²</td><td><code>=RSQ(B1:B10, A1:A10)</code></td></tr>
+        </table>
+        <div class="tip-box">💡 <strong>T.TEST argumen:</strong> tails (1=satu ekor, 2=dua ekor), type (1=berpasangan, 2=dua sampel sama variansi, 3=dua sampel beda variansi).</div>
+        <div class="tip-box" style="border-color:var(--accent3);background:rgba(124,58,237,0.05);color:#c4b5fd;">🔑 <strong>Interpretasi R²:</strong> Nilai R² mendekati 1 berarti variabel X dapat menjelaskan variabel Y dengan baik. Contoh: R²=0.85 artinya 85% variasi Y dijelaskan oleh X.</div>
+      </div>
+    </div>
+
+  </div><!-- end materi -->
+
+  <!-- ===== KUIS ===== -->
+  <div class="section" id="sec-quiz">
+    <div class="quiz-header">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;">Kuis Pemahaman</div>
+        <div class="quiz-counter" id="qCounter">Soal 1 dari 20</div>
+      </div>
+      <button class="btn btn-secondary" onclick="restartQuiz()">↺ Mulai Ulang</button>
+    </div>
+    <div id="quizArea"></div>
+    <div id="resultScreen" style="display:none" class="result-screen">
+      <div class="result-big" id="finalScore">0%</div>
+      <div class="result-label">Skor Akhir Kuis</div>
+      <div class="result-breakdown">
+        <div class="rb-item"><div class="rb-num" id="rbCorrect" style="color:var(--green)">0</div><div class="rb-lbl">BENAR</div></div>
+        <div class="rb-item"><div class="rb-num" id="rbWrong" style="color:var(--red)">0</div><div class="rb-lbl">SALAH</div></div>
+        <div class="rb-item"><div class="rb-num" id="rbTotal">20</div><div class="rb-lbl">TOTAL</div></div>
+      </div>
+      <button class="btn btn-primary" onclick="restartQuiz()" style="margin-right:10px">↺ Ulangi Kuis</button>
+      <button class="btn btn-secondary" onclick="switchTab('latihan')">Lanjut Latihan →</button>
+    </div>
+  </div>
+
+  <!-- ===== LATIHAN HITUNG ===== -->
+  <div class="section" id="sec-latihan">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7">Tulis formula Excel yang tepat untuk setiap soal berikut. Isi kolom <strong style="color:var(--text)">Formula Excel</strong> dengan jawaban yang benar.</p>
+
+    <div id="exerciseArea"></div>
+    <div style="text-align:center;margin-top:24px">
+      <button class="btn btn-primary" onclick="checkAllExercises()">✔ Cek Semua Jawaban</button>
+      <button class="btn btn-secondary" onclick="resetExercises()" style="margin-left:10px">↺ Reset</button>
+    </div>
+    <div id="exerciseResult" style="text-align:center;margin-top:16px;font-family:'Syne',sans-serif;font-size:20px;font-weight:700;display:none"></div>
+  </div>
+
+  <!-- ===== CHEATSHEET ===== -->
+  <div class="section" id="sec-cheat">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Rangkuman cepat semua fungsi Excel statistika & probabilitas. Simpan sebagai referensi belajarmu!</p>
+    <div class="cheat-grid" id="cheatGrid"></div>
+  </div>
+
+</div><!-- end wrap -->
+
+<script>
+// ===== TABS =====
+function switchTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  const tabs = { materi:0, quiz:1, latihan:2, cheat:3 };
+  document.querySelectorAll('.tab')[tabs[id]].classList.add('active');
+  if (id === 'quiz' && !quizStarted) initQuiz();
+  if (id === 'latihan') renderExercises();
+  if (id === 'cheat') renderCheat();
+}
+
+function toggleLesson(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+
+// ===== PROGRESS =====
+let totalScore = 0, maxScore = 20;
+function updateProgress(score) {
+  totalScore = score;
+  const pct = Math.round((score / maxScore) * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progScore').textContent = score + ' / ' + maxScore;
+}
+
+// ===== QUIZ DATA =====
+const quizData = [
+  { q: "Fungsi Excel untuk menghitung rata-rata dari rentang data A1:A20 adalah...", opts: ["=MEAN(A1:A20)", "=AVERAGE(A1:A20)", "=AVG(A1:A20)", "=SUM(A1:A20)/COUNT(A1:A20)"], ans: 1, exp: "AVERAGE adalah fungsi bawaan Excel untuk menghitung rata-rata. SUM/COUNT juga menghasilkan nilai sama, tetapi AVERAGE lebih ringkas dan tepat." },
+  { q: "Untuk menghitung standar deviasi data SAMPEL (bukan populasi), fungsi yang tepat adalah...", opts: ["=STDEV.P()", "=VAR.S()", "=STDEV.S()", "=STDEVA()"], ans: 2, exp: "STDEV.S digunakan untuk data sampel, menggunakan pembagi n-1 (Bessel's correction). STDEV.P digunakan untuk seluruh populasi dengan pembagi n." },
+  { q: "Apa hasil dari =NORM.S.INV(0.975)?", opts: ["1.645", "1.96", "2.326", "2.576"], ans: 1, exp: "NORM.S.INV(0.975) menghasilkan Z = 1.96. Nilai ini digunakan dalam uji hipotesis dua ekor pada α = 0.05, di mana 95% data berada di rentang ±1.96σ." },
+  { q: "Fungsi yang digunakan untuk menghitung peluang KUMULATIF distribusi binomial P(X ≤ k) adalah...", opts: ["=BINOM.DIST(k, n, p, FALSE)", "=BINOM.DIST(k, n, p, TRUE)", "=BINOM.INV(n, p, k)", "=NEGBINOM.DIST(k, n, p, TRUE)"], ans: 1, exp: "Argumen TRUE pada BINOM.DIST menghasilkan probabilitas kumulatif P(X ≤ k). Argumen FALSE menghasilkan probabilitas tepat P(X = k)." },
+  { q: "Untuk menghitung nilai kritis t (dua ekor) pada α=0.05 dengan df=9, formula yang tepat adalah...", opts: ["=T.DIST(0.05, 9, TRUE)", "=T.INV(0.95, 9)", "=T.INV.2T(0.05, 9)", "=T.DIST.2T(0.05, 9)"], ans: 2, exp: "T.INV.2T(alpha, df) mengembalikan nilai kritis t untuk uji dua ekor. Hasilnya adalah 2.262 untuk df=9, α=0.05." },
+  { q: "Koefisien korelasi Pearson antara data X (A1:A10) dan Y (B1:B10) dihitung dengan...", opts: ["=COVARIANCE.S(A1:A10, B1:B10)", "=CORREL(A1:A10, B1:B10)", "=RSQ(A1:A10, B1:B10)", "=SLOPE(A1:A10, B1:B10)"], ans: 1, exp: "CORREL menghitung koefisien korelasi Pearson (r) antara dua variabel, dengan rentang nilai -1 sampai +1." },
+  { q: "Nilai =STANDARDIZE(80, 70, 10) menghasilkan...", opts: ["0.8", "1.0", "1.2", "10"], ans: 1, exp: "Z = (X - μ) / σ = (80 - 70) / 10 = 1.0. Fungsi STANDARDIZE mengkonversi nilai X ke nilai Z (skor standar)." },
+  { q: "Untuk menghitung persentil ke-90 dari data A1:A50, formula yang tepat adalah...", opts: ["=PERCENTILE.INC(A1:A50, 90)", "=PERCENTILE.INC(A1:A50, 0.9)", "=QUARTILE.INC(A1:A50, 90)", "=RANK.AVG(90, A1:A50)"], ans: 1, exp: "PERCENTILE.INC menerima nilai antara 0 dan 1 (bukan 0-100). Jadi persentil ke-90 = PERCENTILE.INC(data, 0.9)." },
+  { q: "Distribusi Poisson digunakan untuk situasi...", opts: ["Dua hasil: sukses/gagal dalam n percobaan", "Penarikan tanpa pengembalian dari populasi terbatas", "Jumlah kejadian dalam interval waktu/ruang tertentu", "Proporsi kejadian dalam sampel besar"], ans: 2, exp: "Distribusi Poisson memodelkan jumlah kejadian dalam interval tetap (waktu/ruang), misalnya jumlah panggilan per jam, kesalahan per halaman." },
+  { q: "Formula untuk menghitung R² (koefisien determinasi) dari data Y (B1:B10) dan X (A1:A10) adalah...", opts: ["=CORREL(B1:B10, A1:A10)", "=SLOPE(B1:B10, A1:A10)^2", "=RSQ(B1:B10, A1:A10)", "=VAR.S(B1:B10)/VAR.S(A1:A10)"], ans: 2, exp: "RSQ menghitung koefisien determinasi R² yang menunjukkan seberapa baik model regresi menjelaskan variasi data Y." },
+  { q: "=QUARTILE.INC(data, 1) menghasilkan nilai...", opts: ["Nilai minimum", "Kuartil pertama (Q1 = persentil 25)", "Median (persentil 50)", "Kuartil ketiga (Q3 = persentil 75)"], ans: 1, exp: "QUARTILE.INC dengan argumen 1 menghasilkan Q1 (kuartil pertama = persentil 25). Argumen 2 = median, argumen 3 = Q3." },
+  { q: "Untuk menghasilkan nilai RATA-RATA yang tidak terpengaruh outlier, fungsi terbaik adalah...", opts: ["=AVERAGE()", "=MEDIAN()", "=TRIMMEAN(data, 0.1)", "=GEOMEAN()"], ans: 2, exp: "TRIMMEAN memotong persentase data terkecil dan terbesar sebelum menghitung rata-rata, sehingga lebih robust terhadap outlier." },
+  { q: "Argumen type=1 pada =T.TEST() berarti...", opts: ["Uji satu ekor", "Uji dua ekor", "Uji t berpasangan (paired)", "Uji t dua sampel independen"], ans: 2, exp: "Pada T.TEST: tails (1=satu ekor, 2=dua ekor), type (1=berpasangan, 2=dua sampel variansi sama, 3=dua sampel variansi berbeda)." },
+  { q: "Nilai kurtosis positif besar (leptokurtik) artinya...", opts: ["Distribusi lebih landai dari normal", "Distribusi lebih lancip/runcing dari normal", "Distribusi condong ke kanan", "Distribusi condong ke kiri"], ans: 1, exp: "Kurtosis positif (leptokurtik) = ekor lebih tebal, puncak lebih runcing. Kurtosis negatif (platykurtik) = lebih landai. Normal = kurtosis ≈ 0." },
+  { q: "=NORM.DIST(75, 70, 10, TRUE) menghitung...", opts: ["Tinggi kurva normal di x=75", "P(X = 75) jika μ=70, σ=10", "P(X ≤ 75) jika μ=70, σ=10", "P(X ≥ 75) jika μ=70, σ=10"], ans: 2, exp: "Dengan argumen TRUE, NORM.DIST menghitung probabilitas kumulatif P(X ≤ 75). Hasilnya ≈ 0.6915 atau 69.15%." },
+  { q: "Untuk menghitung slope (b₁) dari regresi Y atas X, formula yang digunakan adalah...", opts: ["=INTERCEPT(Y_range, X_range)", "=SLOPE(Y_range, X_range)", "=RSQ(Y_range, X_range)", "=FORECAST.LINEAR(x, Y_range, X_range)"], ans: 1, exp: "SLOPE(known_y, known_x) menghitung koefisien kemiringan b₁ dalam model regresi Y = b₀ + b₁X." },
+  { q: "=CHISQ.TEST() mengembalikan nilai...", opts: ["Statistik chi-square hitung", "Nilai kritis chi-square", "p-value dari uji chi-square", "Derajat kebebasan"], ans: 2, exp: "CHISQ.TEST mengembalikan p-value dari uji chi-square independensi/kecocokan. Jika p-value < α (misal 0.05), tolak H₀." },
+  { q: "Nilai =SKEW() yang mendekati 0 artinya...", opts: ["Distribusi sangat lancip", "Distribusi sangat landai", "Distribusi hampir simetris (mendekati normal)", "Distribusi sangat condong ke kanan"], ans: 2, exp: "Skewness ≈ 0 berarti distribusi hampir simetris. Skewness > 0 berarti condong ke kanan (right-skewed), < 0 condong ke kiri." },
+  { q: "Untuk menghitung rata-rata geometrik dari data pertumbuhan (A1:A10), gunakan...", opts: ["=AVERAGE(A1:A10)", "=GEOMEAN(A1:A10)", "=HARMEAN(A1:A10)", "=TRIMMEAN(A1:A10, 0.1)"], ans: 1, exp: "GEOMEAN cocok untuk data rasio/pertumbuhan seperti return investasi. Rata-rata geometrik = ⁿ√(x₁ × x₂ × ... × xₙ)." },
+  { q: "Formula =FORECAST.LINEAR(100, B1:B20, A1:A20) digunakan untuk...", opts: ["Menghitung korelasi saat X=100", "Memprediksi nilai Y ketika X=100 berdasarkan regresi", "Menghitung slope di X=100", "Menghitung varians saat X=100"], ans: 1, exp: "FORECAST.LINEAR memprediksi nilai Y untuk X yang ditentukan menggunakan model regresi linear yang dibangun dari data yang ada." }
+];
+
+let quizStarted = false, currentQ = 0, correctCount = 0, wrongCount = 0;
+const answered = new Array(quizData.length).fill(false);
+
+function initQuiz() {
+  quizStarted = true;
+  currentQ = 0; correctCount = 0; wrongCount = 0;
+  answered.fill(false);
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const quizArea = document.getElementById('quizArea');
+  const resultScreen = document.getElementById('resultScreen');
+  if (currentQ >= quizData.length) {
+    quizArea.style.display = 'none';
+    resultScreen.style.display = 'block';
+    const pct = Math.round((correctCount / quizData.length) * 100);
+    document.getElementById('finalScore').textContent = pct + '%';
+    document.getElementById('rbCorrect').textContent = correctCount;
+    document.getElementById('rbWrong').textContent = wrongCount;
+    document.getElementById('rbTotal').textContent = quizData.length;
+    updateProgress(correctCount);
+    return;
+  }
+  resultScreen.style.display = 'none';
+  quizArea.style.display = 'block';
+  document.getElementById('qCounter').textContent = `Soal ${currentQ + 1} dari ${quizData.length}`;
+  const d = quizData[currentQ];
+  const labels = ['A','B','C','D'];
+  quizArea.innerHTML = `
+    <div class="question-card">
+      <div class="q-number">SOAL ${currentQ + 1}</div>
+      <div class="q-text">${d.q}</div>
+      <div class="options" id="opts">
+        ${d.opts.map((o,i) => `
+          <div class="option" id="opt${i}" onclick="selectAnswer(${i})">
+            <span class="opt-label">${labels[i]}</span>
+            <span>${o}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="feedback-box" id="feedback"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:4px">
+      <button class="btn btn-primary" id="nextBtn" style="display:none" onclick="nextQuestion()">Soal Berikutnya →</button>
+    </div>
+  `;
+}
+
+function selectAnswer(idx) {
+  if (answered[currentQ]) return;
+  answered[currentQ] = true;
+  const d = quizData[currentQ];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('locked'));
+  const fb = document.getElementById('feedback');
+  if (idx === d.ans) {
+    opts[idx].classList.add('correct');
+    correctCount++;
+    fb.className = 'feedback-box show correct-fb';
+    fb.innerHTML = `✅ <strong>Benar!</strong> ${d.exp}`;
+  } else {
+    opts[idx].classList.add('wrong');
+    opts[d.ans].classList.add('correct');
+    wrongCount++;
+    fb.className = 'feedback-box show wrong-fb';
+    fb.innerHTML = `❌ <strong>Kurang tepat.</strong> Jawaban benar: <strong>${['A','B','C','D'][d.ans]}</strong>. ${d.exp}`;
+  }
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+}
+
+function restartQuiz() {
+  quizStarted = false;
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'block';
+  initQuiz();
+}
+
+// ===== EXERCISES =====
+const exercises = [
+  {
+    title: "Statistik Deskriptif Dasar",
+    desc: "Data nilai ujian 10 siswa ada di sel A1:A10. Tuliskan formula Excel yang benar untuk masing-masing perhitungan.",
+    data: "Data di A1:A10 = {72, 85, 90, 63, 78, 88, 95, 70, 82, 76}",
+    items: [
+      { label: "Rata-rata", answer: "=AVERAGE(A1:A10)" },
+      { label: "Median", answer: "=MEDIAN(A1:A10)" },
+      { label: "Standar Deviasi Sampel", answer: "=STDEV.S(A1:A10)" },
+      { label: "Varians Sampel", answer: "=VAR.S(A1:A10)" },
+      { label: "Kuartil 1 (Q1)", answer: "=QUARTILE.INC(A1:A10,1)" },
+    ]
+  },
+  {
+    title: "Distribusi Normal",
+    desc: "Nilai ujian berdistribusi normal dengan μ=75 dan σ=10. Tuliskan formula untuk soal-soal berikut.",
+    data: "μ = 75, σ = 10 (nilai di sel B1 & B2)",
+    items: [
+      { label: "P(X ≤ 80)", answer: "=NORM.DIST(80,75,10,TRUE)" },
+      { label: "Nilai Z untuk X=85", answer: "=STANDARDIZE(85,75,10)" },
+      { label: "Nilai x pada persentil 95", answer: "=NORM.INV(0.95,75,10)" },
+      { label: "P(X ≤ z=1.96) standar", answer: "=NORM.S.DIST(1.96,TRUE)" },
+    ]
+  },
+  {
+    title: "Distribusi Binomial",
+    desc: "Sebuah koin dilempar 10 kali (p=0.5). Tuliskan formula untuk perhitungan berikut.",
+    data: "n = 10, p = 0.5",
+    items: [
+      { label: "P(X = 5)", answer: "=BINOM.DIST(5,10,0.5,FALSE)" },
+      { label: "P(X ≤ 6) kumulatif", answer: "=BINOM.DIST(6,10,0.5,TRUE)" },
+      { label: "P(X = 3) Poisson, λ=2", answer: "=POISSON.DIST(3,2,FALSE)" },
+    ]
+  },
+  {
+    title: "Korelasi & Regresi",
+    desc: "Data X ada di A1:A15 dan data Y ada di B1:B15. Tuliskan formula untuk analisis regresi.",
+    data: "X di A1:A15, Y di B1:B15",
+    items: [
+      { label: "Koefisien korelasi (r)", answer: "=CORREL(A1:A15,B1:B15)" },
+      { label: "Koefisien determinasi (R²)", answer: "=RSQ(B1:B15,A1:A15)" },
+      { label: "Slope (b₁)", answer: "=SLOPE(B1:B15,A1:A15)" },
+      { label: "Intercept (b₀)", answer: "=INTERCEPT(B1:B15,A1:A15)" },
+    ]
+  }
+];
+
+function normalize(s) {
+  return s.replace(/\s/g,'').toUpperCase().replace(/;/g,',');
+}
+
+function renderExercises() {
+  const area = document.getElementById('exerciseArea');
+  if (area.innerHTML !== '') return;
+  area.innerHTML = exercises.map((ex, ei) => `
+    <div class="exercise-card">
+      <div class="exercise-title">${ex.title}</div>
+      <div class="exercise-desc">${ex.desc}</div>
+      <div class="data-display">📌 ${ex.data}</div>
+      ${ex.items.map((item, ii) => `
+        <div class="answer-row">
+          <span class="answer-label">${item.label}</span>
+          <input class="answer-input" id="ex_${ei}_${ii}" placeholder="=..." autocomplete="off" spellcheck="false">
+          <div class="result-msg" id="msg_${ei}_${ii}"></div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function checkAllExercises() {
+  let correct = 0, total = 0;
+  exercises.forEach((ex, ei) => {
+    ex.items.forEach((item, ii) => {
+      total++;
+      const input = document.getElementById(`ex_${ei}_${ii}`);
+      const msg = document.getElementById(`msg_${ei}_${ii}`);
+      const val = input.value.trim();
+      if (!val) { input.className = 'answer-input'; msg.textContent = ''; return; }
+      if (normalize(val) === normalize(item.answer)) {
+        input.className = 'answer-input correct';
+        msg.className = 'result-msg ok';
+        msg.textContent = '✓ Benar!';
+        correct++;
+      } else {
+        input.className = 'answer-input wrong';
+        msg.className = 'result-msg no';
+        msg.textContent = `✗ Jawaban: ${item.answer}`;
+      }
+    });
+  });
+  const res = document.getElementById('exerciseResult');
+  res.style.display = 'block';
+  const pct = Math.round((correct/total)*100);
+  res.style.color = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--red)';
+  res.textContent = `${correct} / ${total} benar (${pct}%)`;
+}
+
+function resetExercises() {
+  document.querySelectorAll('.answer-input').forEach(i => { i.value = ''; i.className = 'answer-input'; });
+  document.querySelectorAll('.result-msg').forEach(m => { m.textContent = ''; });
+  document.getElementById('exerciseResult').style.display = 'none';
+}
+
+// ===== CHEATSHEET =====
+const cheatData = [
+  { cat: "RATA-RATA", items: [["AVERAGE","Mean biasa"],["GEOMEAN","Mean geometrik"],["HARMEAN","Mean harmonik"],["TRIMMEAN","Mean terpangkas"]] },
+  { cat: "TENDENSI SENTRAL", items: [["MEDIAN","Nilai tengah"],["MODE.SNGL","Modus tunggal"],["MODE.MULT","Modus ganda"]] },
+  { cat: "DISPERSI", items: [["STDEV.S","SD sampel"],["STDEV.P","SD populasi"],["VAR.S","Varians sampel"],["VAR.P","Varians populasi"]] },
+  { cat: "POSISI", items: [["PERCENTILE.INC","Persentil ke-n"],["QUARTILE.INC","Kuartil 1/2/3"],["RANK.AVG","Peringkat nilai"]] },
+  { cat: "BENTUK DISTRIBUSI", items: [["SKEW","Kemiringan"],["KURT","Kurtosis"],["MIN","Nilai terkecil"],["MAX","Nilai terbesar"]] },
+  { cat: "DISTRIBUSI NORMAL", items: [["NORM.DIST","P(X≤x) normal"],["NORM.INV","x dari peluang"],["NORM.S.DIST","P(Z≤z) standar"],["STANDARDIZE","X ke Z-score"]] },
+  { cat: "DISTRIBUSI t & F", items: [["T.DIST","Dist-t kiri"],["T.DIST.2T","Dist-t dua ekor"],["T.INV.2T","Kritis t"],["F.DIST","Distribusi F"],["F.INV","Kritis F"]] },
+  { cat: "DISTRIBUSI CHI²", items: [["CHISQ.DIST","Kumulatif chi²"],["CHISQ.INV","Kritis chi²"],["CHISQ.TEST","p-value chi²"]] },
+  { cat: "DISTRIBUSI DISKRIT", items: [["BINOM.DIST","Binomial"],["POISSON.DIST","Poisson"],["HYPGEOM.DIST","Hipergeometrik"],["NEGBINOM.DIST","Binomial negatif"]] },
+  { cat: "UJI HIPOTESIS", items: [["T.TEST","p-value uji t"],["Z.TEST","p-value uji Z"],["F.TEST","Uji variansi"]] },
+  { cat: "KORELASI", items: [["CORREL","Korelasi Pearson"],["COVARIANCE.S","Kovarians sampel"]] },
+  { cat: "REGRESI", items: [["SLOPE","Koef. kemiringan"],["INTERCEPT","Konstanta"],["RSQ","R² determinasi"],["FORECAST.LINEAR","Prediksi nilai"],["LINEST","Regresi lengkap"]] },
+];
+
+function renderCheat() {
+  const g = document.getElementById('cheatGrid');
+  if (g.innerHTML !== '') return;
+  g.innerHTML = cheatData.map(c => `
+    <div class="cheat-card">
+      <div class="cheat-category">${c.cat}</div>
+      ${c.items.map(([fn,desc]) => `
+        <div class="cheat-item">
+          <span class="cheat-name">${desc}</span>
+          <code>${fn}</code>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+</script>
+</body>
+</html>
