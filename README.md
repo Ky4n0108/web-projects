@@ -73,7 +73,7 @@ open index.html
 | CSS Styling | ✅ Done |
 | Responsive Design | ✅ Done |
 | JavaScript Basics | 🔄 Learning |
-| React | ⬜ Not Started |
+| React | Starting Soon!! |
 
 ---
 
